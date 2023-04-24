@@ -1,0 +1,314 @@
+*godoc.txt*  Automatic godoc management for VIM
+
+             _____      ______
+            |  __ \     |  _  \
+            | |  \/ ___ | | | |___   ___
+            | | __ / _ \| | | / _ \ / __|
+            | |_\ \ (_) | |/ / (_) | (__
+             \____/\___/|___/ \___/ \___|
+
+
+
+                godoc REFERENCE MANUAL
+                    by Adrian Lopez
+
+                                                *godoc*
+
+1. Introduction             |godoc-intro|
+2. Commands                 |godoc-commands|
+3. Global Settings          |godoc-settings|
+4. Project Settings         |godoc-project-settings|
+
+=============================================================================
+1. Introduction                                 *godoc-intro*
+
+vim-godoc is a plugin that takes care of the management of godoc
+documentation in Vim. It will (re)generate godoc documentation as you work
+while staying completely out of your way.
+
+In order to generate documentation, godoc will have to figure out what's in
+your project. To do this, it will locate well-known project root markers like
+SCM folders (.git, .hg, etc.), any custom markers you define (with
+|godoc_project_root|).
+
+
+=============================================================================
+2. Commands                                     *godoc-commands*
+
+                                                *godoc-project-commands*
+The following commands are only available in buffers that have been found to
+belong to a project that should be managed by godoc. See
+|godoc_project_root| for how godoc figures out the project a file
+belongs to. When no project is found (i.e. the file is not under any of the
+known project markers), godoc is disabled for that buffer, and the
+following commands and remarks don't apply.
+
+If you want to force-disable godoc for a given project even though it does
+match one of the items in |godoc_project_root|, create a file named
+"`.nogodoc`" at the root of the project.
+
+                                                *:godocRegen*
+:GodocRegen
+                        Manually (re)generate the godoc documentation.
+                        This can be useful when |godoc_auto_regen| is set to
+                        0.
+
+
+
+Some debugging/troubleshooting commands are also available if the
+|godoc_define_advanced_commands| global setting is set to 1.
+
+:GodocOpen
+                        Opens the documentation file on the browser. Both the
+                        file and the browser can be customized with
+                        |godoc_browser_file| and |godoc_browser_cmd|.
+
+
+
+
+Some debugging/troubleshooting commands are also available if the
+|godoc_define_advanced_commands| global setting is set to 1.
+
+
+                                                *:godocToggleEnabled*
+:GodocToggleEnabled
+                        Disables and re-enables godoc.
+                        When godoc is disabled, it won't (re)generate
+                        godoc when you save a buffer. It will however still
+                        look for project markers as you open new buffers so
+                        that they can start working again when you re-enable
+                        godoc.
+
+                        {only available when
+                        |godoc_define_advanced_commands| is set}
+
+                                                *godocToggleTrace*
+:GodocToggleTrace
+                        If you want to keep an eye on what godoc is doing,
+                        you can enable tracing. This will show messages every
+                        time godoc does something. It can get annoying
+                        quickly, since it will require you to press a key to
+                        dismiss those messages, but it can be useful to
+                        troubleshoot a problem.
+
+                        {only available when
+                        |godoc_define_advanced_commands| is set}
+
+
+=============================================================================
+3. Global Settings                              *godoc-settings*
+
+The following settings can be defined in your |vimrc| to change the default
+behaviour of godoc.
+
+                                                *godoc_enabled*
+g:godoc_enabled
+                        Defines whether godoc should be enabled. When
+                        disabled, godoc will still scan for project root
+                        markers when opening buffers. This is so that when you
+                        re-enable godoc, you won't have some buffers
+                        mysteriously working while others (those open last)
+                        don't.
+
+                        Defaults to `1`.
+
+                                                *godoc_trace*
+g:godoc_trace
+                        When true, godoc will spit out debugging
+                        information as Vim messages (which you can later read
+                        with |:messages|).
+
+                        Defaults to `0`.
+
+                                                *godoc_project_root*
+g:godoc_project_root
+                        When a buffer is loaded, godoc will figure out if
+                        it's part of a project that should have godoc managed
+                        automatically. To do this, it looks for "root markers"
+                        in the current file's directory and its parent
+                        directories. If it finds any of those markers,
+                        godoc will be enabled for the project. This is
+                        important because by default, this plugin will use the
+                        project's root directory to run godoc.
+
+                        The default markers are:
+                        `['.git', '.hg', '.svn', '.bzr', '_darcs', '_darcs', '_FOSSIL_', '.fslckout']`
+
+                                                *godoc_include_filetypes*
+g:godoc_include_filetypes
+                        A |List| of file types (see |'filetype'|) that godoc
+                        should use. When a buffer is opened, if its
+                        'filetype' is found in this list, godoc features
+                        will be available for this buffer.
+
+                        Defaults to godoc officially supported languages:
+                        (`['typescript']`).
+
+
+
+                                                *godoc_exclude_project_root*
+g:godoc_exclude_project_root
+                        A list of project roots to generally ignore. If a file
+                        is opened inside one of those projects, godoc
+                        won't be activated. This is similar to placing
+                        a `.nogodoc` file in the root of those projects, but
+                        can be useful when you don't want to, or can't, place
+                        such a file there.
+                        Defaults to `['/usr/local', '/opt/homebrew', '/home/linuxbrew/.linuxbrew']`,
+                        which are the folders where Homebrew is known to
+                        create a Git repository by default.
+
+                                                *godoc_project_root_finder*
+g:godoc_project_root_finder
+                        When a buffer is loaded, godoc uses a default
+                        (internal) implementation to find that file's
+                        project's root directory, using settings like
+                        |g:godoc_project_root|. When you specify
+                        |g:godoc_project_root_finder|, you can tell
+                        godoc to use a custom implementation, such as
+                        `vim-projectroot`. The value of this setting must be
+                        the name of a function that takes a single string
+                        argument (the path to the current buffer's file) and
+                        returns a string value (the project's root directory).
+                        Defaults to `''`.
+                        Note: when set, the called implementation will
+                        possibly ignore |g:godoc_project_root|.
+                        Note: an implementation can fallback to the default
+                        behaviour by calling
+                        `godoc#default_get_project_root`.
+
+                                                *godoc_generate_on_new*
+g:godoc_generate_on_new
+                        If set to 1, godoc will start generating the docs
+                        when a new project is open. A new project is
+                        considered open when a buffer is created for a file
+                        that has not been "seen" yet
+                        in the current Vim session -- which pretty much means
+                        when you open the first file in a given source control
+                        repository.
+                        When set to 0, godoc won't do anything special.
+
+                        Defaults to 1.
+
+                                                *godoc_generate_on_write*
+g:godoc_generate_on_write
+                        If set to 1, godoc will (re)generate godoc
+                        documentation when a file inside that project is
+                        saved. See |godoc_project_root| for how godoc
+                        locates the project.
+                        When set to 0, godoc won't do anything on save.
+                        This means that the docs won't reflect
+                        the latest changes, and you will have to run
+                        |godocUpdate| manually.
+                        Defaults to 1.
+
+                                            *godoc_generate_on_empty_buffer*
+g:godoc_generate_on_empty_buffer
+                        If set to 1, godoc will start generating the godoc
+                        documentation even if there's no buffer currently open,
+                        as long as the current working directory (as returned by
+                        |:cd|) is inside a known project.
+                        This is useful if you want godoc to generate the
+                        docs right after opening Vim.
+
+                        Defaults to 0.
+
+                                            *godoc_resolve_symlinks*
+g:godoc_resolve_symlinks
+                        When set to 1, godoc will resolve any symlinks in
+                        the current buffer's path in order to find the project
+                        it belongs to. This is what you want if you're editing
+                        a symlink located outside of the project, and it
+                        points to a file inside the project. However, this is
+                        maybe not what you want if the symlink itself is
+                        part of the project.
+                        Defaults to 0.
+
+                                            *godoc_init_user_func*
+g:godoc_init_user_func
+                        When set to a non-empty string, it is expected to be
+                        the name of a function that will be called when a file
+                        is opened in a project. The function gets passed the
+                        path of the file and if it returns 0, godoc won't
+                        be enabled for that file.
+
+                        You can use this to manually set buffer-local
+                        settings:
+
+                        Defaults to "".
+
+                                            *godoc_define_advanced_commands*
+g:godoc_define_advanced_commands
+                        Defines some advanced commands like
+                        |godocToggleEnabled|.
+
+
+                                            *godoc_auto_regen*
+g:godoc_auto_regen
+                        When setted to 1, godoc will automatically generate
+                        the documentation for you.
+
+                        If you prefer to generate the docs manually, you can
+                        use the command |godocRegen|. In this case you might want
+                        to set this this global to 0.
+
+                        Defaults to 1.
+
+                                            *godoc_cmd*
+g:godoc_cmd
+                        This is the command that godoc uses to generate the
+                        project documentation.
+
+                        Please, take the default value of this global as reference.
+
+                        Defaults to "godoc".
+
+
+                                            *godoc_browser_cmd*
+g:godoc_browser_cmd
+                        It is the program that will be used to open
+                        |godoc_browser_file|.
+
+                        This can be your internet browser, or anything else,
+                        really.
+
+                        Defaults to "xdg-open".
+
+                                            *godoc_browser_file*
+g:godoc_browser_file
+                        The file that will be opened by the command
+                        |godocOpen|.
+
+                        Defaults to "./docs/index.html".
+
+                                            *godoc_verbose_manual_regen*
+g:godoc_verbose_manual_regen
+                        Display a message on the status bar when godoc is
+                        manually regenerated using the command :|godocRegen|.
+                        Normally, used through a keybinding.
+
+                        Defaults to "1".
+
+
+                                            *godoc_verbose_open*
+g:godoc_verbose_open
+                        Display a message on the status bar when the godoc
+                        documentation is opened on the browser using the
+                        command :|godocOpen|. Normally, used
+                        through a keybinding.
+
+                        Defaults to "1".
+
+
+=============================================================================
+4. Project Settings                             *godoc-project-settings*
+
+godoc can be customized to some extent on a per-project basis with the
+following files present in the project root directory:
+
+                                                *godoc-.nogodoc*
+`.nogodoc`: if this file exists, godoc will be disabled completely for that
+project.
+
+
+ vim:tw=78:et:ft=help:norl:
