@@ -3,19 +3,9 @@ Out of the box, this plugin automatically regenerates your godoc
 documentation. Currently, this plugin is in highly experimental state.
 
 ## Dependencies
-```sh
-# For this to work, you must install godoc like
-sudo npm -g godoc
+You need to have intalled the package
 ```
-
-You also need to have this on your project tsconfig.json
-```typescript
-{
-  "godocOptions": {
-    "entryPoints": './index.ts',
-    "out": 'docs'
-  }
-}
+godoc
 ```
 
 ## Documentation
@@ -30,7 +20,7 @@ Copy this in your vimconfig:
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Enable it for the next languages
-let g:godoc_include_filetypes = ['typescript']
+let g:godoc_include_filetypes = ['go']
 
 " Enable the keybindings for the languages in g:godoc_include_filetypes
 augroup godoc_mappings
