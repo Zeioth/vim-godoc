@@ -70,7 +70,7 @@ let g:godoc_cmd = get(g:, 'godoc_cmd', 'godoc -html ./ > ./docs/index.html')
 
 " godoc - Open on browser
 let g:godoc_browser_cmd = get(g:, 'godoc_browser_cmd', 'xdg-open')
-let g:godoc_browser_file = get(g:, 'godoc_browser_file', './docs/index.html')
+let g:godoc_browser_file = get(g:, 'godoc_browser_file', '/docs/index.html')
 
 " godoc - Verbose
 let g:godoc_verbose_manual_regen = get(g:, 'godoc_verbose_open', '1')
