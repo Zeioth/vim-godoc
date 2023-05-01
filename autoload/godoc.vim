@@ -194,9 +194,6 @@ function! godoc#setup_godoc() abort
         endif
 
         let b:godoc_files = {}
-        " for module in g:godoc_modules
-        "     call call("godoc#".module."#init", [b:godoc_root])
-        " endfor
     catch /^godoc\:/
         call godoc#trace("No godoc support for this buffer.")
         return
