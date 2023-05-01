@@ -252,7 +252,7 @@ function! s:godoc_open() abort
         if g:godoc_verbose_open == 1
           echo g:godoc_browser_cmd . ' ' . l:proj_dir . g:godoc_browser_file
         endif
-        call job_start(['sh', '-c', g:doxygen_browser_cmd . ' ' . l:proj_dir . g:doxygen_browser_file], {})
+        call job_start(['sh', '-c', g:godoc_browser_cmd . ' ' . l:proj_dir . g:godoc_browser_file], {})
     endtry
 endfunction
 
