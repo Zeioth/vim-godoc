@@ -162,7 +162,7 @@ function! godoc#setup_godoc() abort
     endif
 
     " We only want to use vim-godoc in the filetypes supported by godoc
-    if !index(g:doxygen_include_filetypes, &filetype) >= 0
+    if index(g:godoc_include_filetypes, &filetype) == -1
         return
     endif
 
