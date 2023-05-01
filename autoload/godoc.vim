@@ -220,12 +220,6 @@ function! godoc#setup_godoc() abort
     command! -buffer -bang GodocRegen :call s:manual_godoc_regen(<bang>0)
     command! -buffer -bang GodocOpen :call s:godoc_open()
 
-    " Keybindings
-    "nmap <silent> <C-k> :<C-u>godocRegen<CR>
-    "nmap <silent> <C-h> :<C-u>godocOpen<CR>
-    nmap <silent> g:godoc_shortcut_regen . :<C-u>godocRegen<CR>
-    nmap <silent> g:godoc_shortcut_open . :<C-u>godocOpen<CR>
-
 endfunction
 
 " }}}
